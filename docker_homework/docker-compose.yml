@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  backend:
+    build: ./web
+    container_name: my_fastapi_app
+    ports:
+      - "8098:8098"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: my_nginx_server
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  client:
+    build: ./client_container
+    container_name: my_client_script
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
